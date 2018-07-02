@@ -106,10 +106,10 @@ for (i in 1:300) {
 }
 
 # join the new columns
-wine2 <- cbind(wine[,1],wineyard,winetype,wine[,2:5745])
-colnames(wine2)[1] <- "name"
-wine2[1:5,1:10]
+wine2 <- cbind(wineyard,winetype,wine[,2:5745])
+wine <- wine2
+wine[1:5,1:10]
 
 # save new data as .RdA and .csv
-save(wine2, file="wine.Rda")
-write.csv(wine2, file = "wine.csv")
+save(wine, file="wine.Rda")
+write.csv(wine, file = "wine.csv")
