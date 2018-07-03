@@ -1,0 +1,308 @@
+---
+title: 'Second Project: Wine Metabolomics'
+author: Ana Maria Sandoval Jimenez, Jannis Busch & Sabrina Steinert
+date: "July 6, 2018"
+output: 
+  html_document:
+    toc: true
+    theme: lumen
+    code_folding: hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
+```
+
+## Abstract
+Our Goal is to classify/distinguish wine attributes like variety, origin, vintage, and quality by the use of metabolomic data.
+
+## 1 Introduction
+
+Metabolomics is an emerging field in grape and wine research enabling chemical and biochemical profiling of samples (wine) in order to obtain insight into its biological characteristics and properties (1). 
+Metabonomics is defined as "the quantitative measurement of the dynamic multiparametric metabolic response of living systems to pathophysiological stimuli or genetic modification" (4). In simple words it is the science which studies the small molecules present in a sample as the result from primary and secondary metabolism. The small molecules can be measured by the use of Mass Spectrometry, which is a technique that ionizes chemical species and sorts the ions based on their mass-to-charge ratio. In simpler terms, a mass spectrum measures the masses within a sample (5).
+
+<center>
+![Orbitrap mass spectrometer](images/Orbitrap-Velos-Pro.jpg){width=400px}
+
+</center>
+
+The aim of this report is to provide a comparison of different wine metabolomic profiles and its correlation with the human quality classification of wine. With our results we expect to use wine metabolomics to study wine classification and authentication.
+
+## 2 Material and Methods
+
+### 2.1 Wine Samples:
+Around 300 monovarietal commercial Chilean wines, elaborated by different vineyards (Viña Concha y Toro, Viña San Pedro, Viña los Vascos, Viña Undurraga, Viña Aresti and Viña Tamaya), from different pure cultivars [(100% Carmenre (CM), 100% Cabernet Sauvignon (CS), 100% Merlot (ME), and 100% Syrah (SY)], from different vintages (2002, 2003, 2004, 2005, and 2006) and different quality scores premium-quality (high), reserve-quality (medium), and varietal-quality (low), were directly analyzed from each bottle. 
+3 ml of each wine sample was stored, each with six technical replicas.
+
+: Table 1:  Overview of all sampled Chilenean wines (with price tag).
+
++---------------+---------------+---------------+----------+
+| Original      |               |               |          |
+| Abbreviation  | Wine yard     | Wine type     | Price    |
++===============+===============+===============+==========+
+| VASCOS        | Vascos        | Cabernet-     | EUR 11   |
+|               |               | sauvignon     |          |
++---------------+---------------+--------------------------+
+| VSP           | San Pedro     | Cabernet-     | EUR 5    |
+|               |               | sauvignon     |          |
++---------------+---------------+--------------------------+
+| A             | Aresti        | Cabernet-     | EUR 3-5  |
+|               |               | sauvignon     |          |
++---------------+---------------+--------------------------+
+| CT            | Concha Y Toro | Cabernet-     | EUR 7    |
+|               |               | sauvignon     |          |
++---------------+---------------+--------------------------+
+| T_CCMS        | Tocornal      | Cabernet-     | EUR 5    |
+|               |               | sauvignon,    |          |
+|               |               | Carmenere,    |          |
+|               |               | Syrah**       |          |
++---------------+---------------+--------------------------+
+| TA_CF         | Tarapacá      | Cabernet      | EUR 5-6  |
+|               |               | Franc         |          |
++---------------+---------------+--------------------------+
+| U             | Undurraga     | Cabernet-     | EUR 7-10 |
+|               |               | sauvignon     |          |
++---------------+---------------+--------------------------+
+| A_CARM        | Aresti        | Carmenere     | EUR 6-9  |
+|               |               |               |          |
++---------------+---------------+--------------------------+
+| A_CCM         | Aresti        | Carmenere,    | EUR 11-13|
+|               |               | Cabernet-     |          |
+|               |               | sauvignon,    |          |
+|               |               | Merlot**      |          |
++---------------+---------------+--------------------------+
+| A_SYRAH       | Aresti        | Syrah         | EUR 12-15|
+|               |               |               |          |
++---------------+---------------+--------------------------+
+| T_MCSS        | Tocornal      | Merlot,       | EUR 3-5  |
+|               |               | Cabernet-     |          |
+|               |               | sauvignon,    |          |
+|               |               | Syrah**       |          |
++---------------+---------------+--------------------------+
+| TA_SYRAH      | Tarapacá      | Syrah         | EUR 3-5  |
+|               |               |               |          |
++---------------+---------------+--------------------------+
+| TA_M          | Tarapacá      | Merlot        | EUR 11   |
+|               |               |               |          |
++---------------+---------------+--------------------------+
+| U_CM          | Undurraga     | Carmenere     | EUR 3-9  |
+|               |               |               |          |
++---------------+---------------+--------------------------+
+
+**mixtures of different grape cultivars
+
+### 2.2 Metabolomic Measurement
+The metabolomic process involves: taking a small sample from each bottle, detection, spectral analysis, generation of a "sample specific" fingerprint.
+
+Ultra high performance liquid chromatography (UPLC) coupled to ultra high resolution mass spectrometry (FT-ICR) to analyze the metabolic composition of a wide array of unfractionated Chilean red wines in positive ionization modes. 
+
+The metabolomic profiling analysis of all samples were carried out from the Max Planck institute of Molecular and plant physiology in Potsdam together with the University of Santiago de Chile. 
+
+In brief: 2 ??L of the wine sample were loaded per injection into the UPLC column.  Sample separation into the differents metabolites according their weight. The mass spectra were acquired using Ultra mass spectrometer. a set of six experimental sample technical replicates per wine were measured. 
+
+We receive the raw files including: molecular masses, retention time and associated peak intensities. 
+
+## 3 Data Preprocessing
+
+The data came in a .txt file and was preprocessed for easier further analysis with R Studio.
+
+```{r transform and save}
+# # Transform raw data
+# data <- read.delim("../300_Wine_pos.txt")
+# wine_data <- data[,4:303]
+# 
+# # Split the name column into several columns and transpose dataframe 
+# quality <- matrix(ncol=1, nrow=dim(wine_data)[2])
+# bottlenum <- matrix(ncol=1, nrow=dim(wine_data)[2])
+# posneg <- matrix(ncol=1, nrow=dim(wine_data)[2])
+# year <- matrix(ncol=1, nrow=dim(wine_data)[2])
+# name <- matrix(ncol=1, nrow=dim(wine_data)[2])
+# 
+# for (i in 1:dim(wine_data)[2]) {
+#   quality[i] <- substr(colnames(wine_data)[i],4,4)
+#   letters <- nchar(colnames(wine_data)[i])
+#   bottlenum[i] <- substr(colnames(wine_data)[i],letters,letters)
+#   posneg[i] <- substr(colnames(wine_data)[i],letters-4,letters-2)
+#   year[i] <- substr(colnames(wine_data)[i],letters-7,letters-6)
+#   name[i] <- substr(colnames(wine_data)[i],6,letters-9)
+# }
+# t_wine_data <- as.data.frame(t(wine_data))
+# colnames(t_wine_data) = data$MZ
+# 
+# wine <- cbind(name, year, posneg, bottlenum, quality, t_wine_data)
+# 
+# # change colnames to friendly ones just a number 
+# true_colnames <-colnames(wine)
+# colnames(wine)[6:5745] <- c(1:5740)
+# 
+# # change rownames to friendly ones, sequence 1:300
+# rownames(wine) <- seq(1,300) 
+# 
+# # change colum "name" to two columns one for wineyard the other for wine type
+# wineyard <- {}
+# winetype <- {}
+# 
+# for (i in 1:300) {
+#   if  (wine[i,1] == "A") {
+#     wineyard[i] <- "Aresti"
+#     winetype[i] <- "Cabernet-sauvignon"
+#   }
+#   else if   (wine[i,1] == "A_CARM") {
+#       wineyard[i] <- "Aresti"
+#       winetype[i] <- "Carmenere"
+#   }
+#   else if   (wine[i,1] == "A_CCM") {
+#       wineyard[i] <- "Aresti"
+#       winetype[i] <- "Mix"
+#   }
+#   else if   (wine[i,1] == "A_SYRAH") {
+#       wineyard[i] <- "Aresti"
+#       winetype[i] <- "SYRAH"
+#   }
+#   else if   (wine[i,2] == "CT") {
+#     wineyard[i] <- "Concha y Toro"
+#     winetype[i] <- "Cabernet-sauvignon"
+#   }
+#   else if   (wine[i,1] == "T_CCMS") {
+#     wineyard[i] <- "Tocornal"
+#     winetype[i] <- "Mix"
+#   }
+#   else if   (wine[i,1] == "T_CCMS") {
+#     wineyard[i] <- "Tocornal"
+#     winetype[i] <- "Mix"
+#   }
+#   else if   (wine[i,1] == "TA_CF") {
+#     wineyard[i] <- "Tarapaca"
+#     winetype[i] <- "Cabernet Franc"
+#   }
+#   else if   (wine[i,1] == "TA_M") {
+#     wineyard[i] <- "Tarapaca"
+#     winetype[i] <- "Merlot"
+#   }
+#   else if   (wine[i,1] == "TA_SYRAH") {
+#     wineyard[i] <- "Tarapaca"
+#     winetype[i] <- "SYRAH"
+#   }
+#   else if   (wine[i,1] == "U") {
+#     wineyard[i] <- "Undurraga"
+#     winetype[i] <- "Cabernet-sauvignon"
+#   }
+#   else if   (wine[i,1] == "U_CM") {
+#     wineyard[i] <- "Undurraga"
+#     winetype[i] <- "Carmenere"
+#   }
+#   else if   (wine[i,1] == "U_CM_") {
+#     wineyard[i] <- "Undurraga"
+#     winetype[i] <- "Carmenere"
+#   }
+#   else if   (wine[i,1] == "VASCOS") {
+#     wineyard[i] <- "VASCOS"
+#     winetype[i] <- "Cabernet-sauvignon"
+#   }
+#   else {
+#     wineyard[i] <- "San Pedro" 
+#     winetype[i] <- "Cabernet-sauvignon"
+#   }
+# }
+# 
+# # join the new columns
+# wine2 <- cbind(wineyard,winetype,wine[,2:5745])
+# wine <- wine2
+# wine[1:5,1:10]
+# 
+# # save new data as .RdA and .csv
+# save(wine, file="wine.Rda")
+# write.csv(wine, file = "wine.csv")
+```
+
+Eventually the data was in the following transposed format with which all further analysis was made. The data is in a wide format and has a total of 300 rows for each wine sample and 5746 columns whereas column 7 to 5746 are the individual metabolomic measurements.
+```{r}
+load("wine.RdA")
+# dim(wine)
+# => [1] 300 5746
+head(wine[,c(1:9, 5745:5746)]) # show first 6 rows and first nine and last two columns
+```
+
+## 4 Analaysis
+### 4.1 First random explorations
+```{r}
+sort(unique(wine$winetype)) # all wine types in alphabetical order
+sort(unique(wine$year)) # wines are from 2002 - 2006
+table(wine$year , wine$winetype) # which wine types are from which year
+table(wine$wineyard, wine$winetype) # see which yard produces which wine type
+unique(wine$quality) # premium (high), r...(middle), v...(low)
+plot(wine$quality) # frequency of wine quality category
+plot(wine$winetype , wine[,7]) # see exemplatory metabolomic distribution in col 6 for each wine type
+```
+
+### 4.2 PCA
+The following PCA plot does not give much insight into the meaning of the clustered 300 wine samples by all 5740 metabolomics.
+```{r}
+km.out<-kmeans(wine[,7:5746],centers=3,nstart=1) # 3 cluster
+pr.out<-prcomp(wine[,7:5746],scale=TRUE)
+plot(pr.out$x[,1:2],type="n", ylab="PC2", main="PCA with 3 clusters from all 300 wine samples")
+text(pr.out$x[,1:2],col=km.out$cluster)
+# biplot(prcomp(wine[,7:5746]))
+```
+
+Hence, the wine samples will be filtered by one examplatory wine yard, Vascos. The  The goal is to compare the PCA analysis with 3 clusters to the human-categorized quality of wine. Since the Vascos wine yard  In other words: does the composition of the 5740 metabolomics derive the quality category of the wine?
+
+### 4.3 The general filter function
+```{r}
+# function that filters the dataframe by wine yard
+byname <- function(name){
+  return(wine[which(wine$wineyard == name), ])
+}
+```
+
+### 4.4 Vascos specific analysis
+54 samples of the Vascos wine yard are available - all from the wine type Cabernet-sauvignon.
+```{r VASCOS}
+vascos <- byname("VASCOS")
+# How many wine samples are taken from the Vascos wine yard?
+dim(vascos)
+```
+
+
+```{r}
+# How different are the metabolics for each vascos wine quality (P,R,V)
+# Cluster the vascos wine and color them by quality to see if the metabolics have an influence on the quality
+km.out<-kmeans(vascos[,7:5746],centers=3,nstart=1)
+pr.out<-prcomp(vascos[,7:5746])#,scale=TRUE)
+par(mfrow=c(1,2), oma = c(0, 0, 2, 0))
+plot(pr.out$x[,1:2],type="n", ylab="PC2", main="Bottle IDs colored by cluster", yaxt="n", xaxt="n")
+text(pr.out$x[,1:2], labels=rownames(vascos), col=km.out$cluster) # bottles colored by cluster, nothing spectacular
+plot(pr.out$x[,1:2], type="n", ylab="PC2", main="Bottle IDs colored by Quality",  yaxt="n", xaxt="n")
+text(pr.out$x[,1:2], labels=rownames(vascos), col=c(vascos$quality)) # bottles colored by quality, wow!
+mtext("PCA for VASCOS", outer = TRUE, cex = 1.5)
+```
+As seen in the plots above, the thesis can not be validated. The clusters built from the PCA of the metabolomics in the wines do not determine the quality category.
+
+```{r}
+# find the top 15 metabolics with the most variances
+var_vasc_meta <- apply(vascos[,7:5746], 2, var) # all metabolomic variances in a vector
+tail(sort(var_vasc_meta),15) # 15 highest variances
+
+sort(var_vasc_meta)[20] # 20th lowest variance
+sort(var_vasc_meta)[1000]
+sort(var_vasc_meta)[2500]
+sort(var_vasc_meta)[5740] # highest variance in metabolomic "14"
+
+par(mfrow=c(1,1))
+plot(vascos$bottlenum, vascos[, "14"]) # the variance is equal for each bottle
+plot(vascos$year, vascos[, "14"]) # the variance in metabolomic "14" differs a lot between the years
+
+# plot(vascos$year, vascos[,7])
+```
+
+
+## 5 Conclusion
+
+
+
+## 6 Bibliography
+<https://doi.org/10.1007/s12161-016-0502-x>
+<https://doi.org/10.1016/j.trac.2015.05.006Xdf>
+<https://en.wikipedia.org/wiki/Metabolomics>
+<https://en.wikipedia.org/wiki/Mass_spectrometry>
+<https://www.wine-searcher.com>
