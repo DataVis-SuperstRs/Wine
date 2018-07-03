@@ -3,9 +3,8 @@
 
 setwd("C:/Users/YOURPATH") # insert your working directory
 
-
 ## @Autor: Jannis Busch
-data <- read.delim("../300_Wine_pos.txt")
+data <- read.delim("../../300_Wine_pos.txt")
 wine_data <- data[,4:303]
 
 # Split the name column into several columns and transpose dataframe 
@@ -59,7 +58,7 @@ for (i in 1:300) {
       wineyard[i] <- "Aresti"
       winetype[i] <- "SYRAH"
   }
-  else if   (wine[i,2] == "CT") {
+  else if   (wine[i,1] == "CT") {
     wineyard[i] <- "Concha y Toro"
     winetype[i] <- "Cabernet-sauvignon"
   }
@@ -108,7 +107,7 @@ for (i in 1:300) {
 # join the new columns
 wine2 <- cbind(wineyard,winetype,wine[,2:5745])
 wine <- wine2
-wine[1:5,1:10]
+
 
 # save new data as .RdA and .csv
 save(wine, file="wine.Rda")
