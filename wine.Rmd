@@ -105,7 +105,6 @@ We receive the raw files including: molecular masses, retention time and associa
 ## 3 Data Preprocessing
 
 The data came in a .txt file and was preprocessed for easier further analysis with R Studio.
-
 ```{r transform and save}
 # # Transform raw data
 # data <- read.delim("../300_Wine_pos.txt")
@@ -214,7 +213,6 @@ The data came in a .txt file and was preprocessed for easier further analysis wi
 # save(wine, file="wine.Rda")
 # write.csv(wine, file = "wine.csv")
 ```
-
 Eventually the data was in the following transposed format with which all further analysis was made. The data is in a wide format and has a total of 300 rows for each wine sample and 5746 columns whereas column 7 to 5746 are the individual metabolomic measurements.
 ```{r}
 load("wine.RdA")
@@ -222,16 +220,28 @@ load("wine.RdA")
 # => [1] 300 5746
 head(wine[,c(1:9, 5745:5746)]) # show first 6 rows and first nine and last two columns
 ```
-
 ## 4 Analaysis
 ### 4.1 First random explorations
+
+In the following two tables we can see that the data set beholds 6 different wine types (out of which one is of type Mix) and 7 different wine yards that produce these wines. Not every wine yard produces every wine type.  
 ```{r}
-sort(unique(wine$winetype)) # all wine types in alphabetical order
-sort(unique(wine$year)) # wines are from 2002 - 2006
-table(wine$year , wine$winetype) # which wine types are from which year
 table(wine$wineyard, wine$winetype) # see which yard produces which wine type
-unique(wine$quality) # premium (high), r...(middle), v...(low)
+```
+
+Notable is that each wine sample was taken in one of the years between 2002 and 2006. 2006 is the only year in which each wine type was sampled at least 6 times. (Every sample included 6 different bottles.)
+```{r}
+table(wine$year , wine$winetype) # which wine types are from which year
+```
+
+The following frequency plot shows the three wine quality categories: **P**remium (high) was sampled 100 times while medium quality **R**eserve was sampled 120 times. The lowest quality category **V**arietal is assigned to the remaining 80 wine samples.
+```{r}
+#unique(wine$quality) 
+# => P (high), R (middle), V (low)
 plot(wine$quality) # frequency of wine quality category
+```
+
+The following plot shows the disctribution of one single metabolomic measurement for each wine type. The result depict a high variance in amount of measured metabolomic for the wine types and suggests that this might correlate with the different years and/or the wine yard from which the wine sample was taken.
+```{r}
 plot(wine$winetype , wine[,7]) # see exemplatory metabolomic distribution in col 6 for each wine type
 ```
 
@@ -245,7 +255,7 @@ text(pr.out$x[,1:2],col=km.out$cluster)
 # biplot(prcomp(wine[,7:5746]))
 ```
 
-Hence, the wine samples will be filtered by one examplatory wine yard, Vascos. The  The goal is to compare the PCA analysis with 3 clusters to the human-categorized quality of wine. Since the Vascos wine yard  In other words: does the composition of the 5740 metabolomics derive the quality category of the wine?
+Hence, the wine samples will be filtered by one examplatory wine yard, Vascos. The goal is to compare the PCA analysis with 3 clusters to the human-categorized quality of wine. In other words: does the composition of the 5740 metabolomics derive the quality category of the wine?
 
 ### 4.3 The general filter function
 ```{r}
@@ -263,7 +273,6 @@ vascos <- byname("VASCOS")
 dim(vascos)
 ```
 
-
 ```{r}
 # How different are the metabolics for each vascos wine quality (P,R,V)
 # Cluster the vascos wine and color them by quality to see if the metabolics have an influence on the quality
@@ -276,7 +285,11 @@ plot(pr.out$x[,1:2], type="n", ylab="PC2", main="Bottle IDs colored by Quality",
 text(pr.out$x[,1:2], labels=rownames(vascos), col=c(vascos$quality)) # bottles colored by quality, wow!
 mtext("PCA for VASCOS", outer = TRUE, cex = 1.5)
 ```
-As seen in the plots above, the thesis can not be validated. The clusters built from the PCA of the metabolomics in the wines do not determine the quality category.
+As seen in the plots above, the thesis can not be validated. The clusters built from the PCA of the metabolomics in the wines do not determine the quality category. However, considering the different years in which the samples were taken, this might indicate that the metabolomics changed due to seasonal differences in the years. 
+
+```{r}
+table(vascos$year, vascos$winetype)
+```
 
 ```{r}
 # find the top 15 metabolics with the most variances
