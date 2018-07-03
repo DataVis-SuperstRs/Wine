@@ -31,7 +31,7 @@ The aim of this report is to provide a comparison of different wine metabolomic 
 ## 2 Material and Methods
 
 ### 2.1 Wine Samples:
-Around 300 monovarietal commercial Chilean wines, elaborated by different vineyards (ViÒa Concha y Toro, ViÒa San Pedro, ViÒa los Vascos, ViÒa Undurraga, ViÒa Aresti and ViÒa Tamaya), from different pure cultivars [(100% Carmenre (CM), 100% Cabernet Sauvignon (CS), 100% Merlot (ME), and 100% Syrah (SY)], from different vintages (2002, 2003, 2004, 2005, and 2006) and different quality scores premium-quality (high), reserve-quality (medium), and varietal-quality (low), were directly analyzed from each bottle. 
+Around 300 monovarietal commercial Chilean wines, elaborated by different vineyards (Vi√±a Concha y Toro, Vi√±a San Pedro, Vi√±a los Vascos, Vi√±a Undurraga, Vi√±a Aresti and Vi√±a Tamaya), from different pure cultivars [(100% Carmenre (CM), 100% Cabernet Sauvignon (CS), 100% Merlot (ME), and 100% Syrah (SY)], from different vintages (2002, 2003, 2004, 2005, and 2006) and different quality scores premium-quality (high), reserve-quality (medium), and varietal-quality (low), were directly analyzed from each bottle. 
 3 ml of each wine sample was stored, each with six technical replicas.
 
 : Table 1:  Overview of all sampled Chilenean wines (with price tag).
@@ -57,7 +57,7 @@ Around 300 monovarietal commercial Chilean wines, elaborated by different vineya
 |               |               | Carmenere,    |          |
 |               |               | Syrah**       |          |
 +---------------+---------------+--------------------------+
-| TA_CF         | Tarapac·      | Cabernet      | EUR 5-6  |
+| TA_CF         | Tarapac√°      | Cabernet      | EUR 5-6  |
 |               |               | Franc         |          |
 +---------------+---------------+--------------------------+
 | U             | Undurraga     | Cabernet-     | EUR 7-10 |
@@ -79,10 +79,10 @@ Around 300 monovarietal commercial Chilean wines, elaborated by different vineya
 |               |               | sauvignon,    |          |
 |               |               | Syrah**       |          |
 +---------------+---------------+--------------------------+
-| TA_SYRAH      | Tarapac·      | Syrah         | EUR 3-5  |
+| TA_SYRAH      | Tarapac√°      | Syrah         | EUR 3-5  |
 |               |               |               |          |
 +---------------+---------------+--------------------------+
-| TA_M          | Tarapac·      | Merlot        | EUR 11   |
+| TA_M          | Tarapac√°      | Merlot        | EUR 11   |
 |               |               |               |          |
 +---------------+---------------+--------------------------+
 | U_CM          | Undurraga     | Carmenere     | EUR 3-9  |
@@ -159,7 +159,7 @@ The data came in a .txt file and was preprocessed for easier further analysis wi
 #       wineyard[i] <- "Aresti"
 #       winetype[i] <- "SYRAH"
 #   }
-#   else if   (wine[i,2] == "CT") {
+#   else if   (wine[i,1] == "CT") {
 #     wineyard[i] <- "Concha y Toro"
 #     winetype[i] <- "Cabernet-sauvignon"
 #   }
@@ -305,4 +305,3 @@ plot(vascos$year, vascos[, "14"]) # the variance in metabolomic "14" differs a l
 <https://doi.org/10.1016/j.trac.2015.05.006Xdf>
 <https://en.wikipedia.org/wiki/Metabolomics>
 <https://en.wikipedia.org/wiki/Mass_spectrometry>
-<https://www.wine-searcher.com>
