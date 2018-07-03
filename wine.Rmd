@@ -276,38 +276,58 @@ dim(vascos)
 ```{r}
 # How different are the metabolics for each vascos wine quality (P,R,V)
 # Cluster the vascos wine and color them by quality to see if the metabolics have an influence on the quality
+set.seed(404)
 km.out<-kmeans(vascos[,7:5746],centers=3,nstart=1)
 pr.out<-prcomp(vascos[,7:5746])#,scale=TRUE)
 par(mfrow=c(1,2), oma = c(0, 0, 2, 0))
 plot(pr.out$x[,1:2],type="n", ylab="PC2", main="Bottle IDs colored by cluster", yaxt="n", xaxt="n")
 text(pr.out$x[,1:2], labels=rownames(vascos), col=km.out$cluster) # bottles colored by cluster, nothing spectacular
-plot(pr.out$x[,1:2], type="n", ylab="PC2", main="Bottle IDs colored by Quality",  yaxt="n", xaxt="n")
+plot(pr.out$x[,1:2], type="n", ylab="PC2", main="Bottle IDs colored by quality",  yaxt="n", xaxt="n")
 text(pr.out$x[,1:2], labels=rownames(vascos), col=c(vascos$quality)) # bottles colored by quality, wow!
 mtext("PCA for VASCOS", outer = TRUE, cex = 1.5)
 ```
-As seen in the plots above, the thesis can not be validated. The clusters built from the PCA of the metabolomics in the wines do not determine the quality category. However, considering the different years in which the samples were taken, this might indicate that the metabolomics changed due to seasonal differences in the years. 
+As seen in the plots above, the thesis can not be validated. The clusters built from the PCA of the metabolomics in the wine samples do not determine the quality category. However, considering the different years in which the samples were taken, this might indicate that the metabolomics changed due to seasonal differences. 
 
+From the following table we can derive that the data set contains Cabernet-sauvignon wine samples from the Vascos wine yard from three different years: 2004, 2005 and 2006
 ```{r}
 table(vascos$year, vascos$winetype)
 ```
 
+Interestingly, when the same wine samples from the precedent PCA analysis are colored by sample year, they cluster accordingly to our 3 PCA clusters.
+```{r}
+plot(pr.out$x[,1:2], type="n", ylab="PC2", main="Bottle IDs colored by year",  yaxt="n", xaxt="n")
+text(pr.out$x[,1:2], labels=rownames(vascos), col=c(vascos$year)) # bottles colored by year
+mtext("PCA for VASCOS", outer = TRUE, cex = 1.5)
+```
+From this analysis we can conclude that the metabolics do not determine the quality label (P, R, V) but rather change due to annual differences in the crops used for the wine. This is an interesting finding, considering that the scientific field of metabolomic measurements is used to determine the quality of a wine. 
+
+As a next step for the Vascos wine yard's Cabernet-sauvignon wine, the variances of the metabolomics are being considered.
+The highest variances appear in the following 15 metabolomics for the sampled wine:
 ```{r}
 # find the top 15 metabolics with the most variances
 var_vasc_meta <- apply(vascos[,7:5746], 2, var) # all metabolomic variances in a vector
 tail(sort(var_vasc_meta),15) # 15 highest variances
+```
 
-sort(var_vasc_meta)[20] # 20th lowest variance
-sort(var_vasc_meta)[1000]
-sort(var_vasc_meta)[2500]
-sort(var_vasc_meta)[5740] # highest variance in metabolomic "14"
+Taking the metabolomic #14 in which the highest variance was measured, the boxplots for each wine sample appear to be very similar.
+```{r}
+# sort(var_vasc_meta)[20] # 20th lowest variance
+# sort(var_vasc_meta)[1000]
+# sort(var_vasc_meta)[2500]
+# sort(var_vasc_meta)[5740] # highest variance in metabolomic "14"
 
-par(mfrow=c(1,1))
+# par(mfrow=c(1,1))
+
 plot(vascos$bottlenum, vascos[, "14"]) # the variance is equal for each bottle
+```
+
+Using again the years as a seperating criterium, one can see that the measured occurence of this specific metabolomic differs a lot between the three years in which samples were taken.
+```{r}
 plot(vascos$year, vascos[, "14"]) # the variance in metabolomic "14" differs a lot between the years
 
 # plot(vascos$year, vascos[,7])
 ```
-
+This again underlines the conclusion that the yearly difference in metabolomic occurence is very high.
 
 ## 5 Conclusion
 
