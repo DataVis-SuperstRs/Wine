@@ -15,28 +15,31 @@ knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
 ```
 
 ## Abstract
-We received data on wine metabolomics from the Max Planck Institute for Molecular and Plant Physiology in Potsdam. these data are measurements of peaks of metabolic intensity and represent a metabolomic footprint of each wine. the data were processed, standardized and analyzed by us. Our Goal was to classify/distinguish wine attributes like variety, origin, vintage, and quality by the use of metabolomic data and most important to correlate wine quality with wine metabolomics.
+We received data on wine metabolomics from the **Max Planck Institute for Molecular and Plant Physiology** in Potsdam. The data contains measurements of peaks of metabolic intensity and represent a metabolomic footprint of each wine sample. The data was processed, standardized and analyzed by us. Our Goal was to classify/distinguish wine attributes like variety, origin, vintage, and quality by the use of metabolomic data and most important to correlate wine quality with wine metabolomics.
 
 ## 1 Introduction
 
 Metabolomics is an emerging field in grape and wine research enabling chemical and biochemical profiling of samples (wine) in order to obtain insight into its biological characteristics and properties (1). 
-Metabonomics is defined as "the quantitative measurement of the dynamic multiparametric metabolic response of living systems to pathophysiological stimuli or genetic modification" (2). In simple words it is the science which studies the small molecules present in a sample as the result from primary and secondary metabolism. The small molecules can be measured by the use of Mass Spectrometry, which is a technique that ionizes chemical species and sorts the ions based on their mass-to-charge ratio. In simpler terms, a mass spectrum measures the masses within a sample (3).
+Metabonomics is defined as "the quantitative measurement of the dynamic multiparametric metabolic response of living systems to pathophysiological stimuli or genetic modification" (2). In simple words it is the science which studies the small molecules present in a sample as the result from primary and secondary metabolism. The small molecules can be measured by the use of mass spectrometry, which is a technique that ionizes chemical species and sorts the ions based on their mass-to-charge ratio. In simpler terms, a mass spectrum measures the masses within a sample (3).
 
- ![Orbitrap mass spectrometer](images/Orbitrap-Velos-Pro.jpg){width=400px} (4)
+<center>
+ ![Orbitrap mass spectrometer (4)](images/Orbitrap-Velos-Pro.jpg){width=400px}
+
+</center>
 
 The aim of this report is to provide a comparison of different wine metabolomic profiles and its correlation with the human quality classification of wine. With our results we expect to use wine metabolomics to study wine classification and authentication.
 
 ## 2 Material and Methods
 
 ### 2.1 Wine Samples
-Around 300 monovarietal commercial Chilean wines, elaborated by different vineyards (Viña Concha y Toro, Viña San Pedro, Viña los Vascos, Viña Undurraga, Viña Aresti and Viña Tamaya), from different pure cultivars [(100% Carmenre, 100% Cabernet Sauvignon, 100% Merlot, 100% Syrah and wine mix], from different vintages (2002, 2003, 2004, 2005, and 2006) and different quality scores premium-quality (high), reserve-quality (medium), and varietal-quality (low), were directly analyzed from each bottle. 
+Around 300 monovarietal commercial Chilean wines, elaborated by different vineyards (Viña Concha y Toro, Viña San Pedro, Viña los Vascos, Viña Undurraga, Viña Aresti and Viña Tamaya), from different pure cultivars (100% Carmenre, 100% Cabernet Sauvignon, 100% Merlot, 100% Syrah and wine mix), from different vintages (2002, 2003, 2004, 2005, and 2006) and different quality scores (premium-quality (high), reserve-quality (medium), and varietal-quality (low)) were directly analyzed from each bottle. 
 3 ml of each wine sample was stored, each with six technical replicas.
 
 : Table 1:  Overview of all sampled Chilenean wines (with price tag).
 
 +---------------+---------------+---------------+----------+
 | Original      |               |               |          |
-| Abbreviation  | Wine yard     | Wine type     | Price *   |
+| Abbreviation  | Wine yard     | Wine type     | Price *  |
 +===============+===============+===============+==========+
 | VASCOS        | Vascos        | Cabernet-     | EUR 11   |
 |               |               | sauvignon     |          |
@@ -93,18 +96,17 @@ Around 300 monovarietal commercial Chilean wines, elaborated by different vineya
 
 ### 2.2 Metabolomic Measurement
 
-In brief: 2 ml of each wine (bottle) sample were loaded per injection into the Mass spectrometer.  A set of six experimental sample technical replicates per wine were measured.
+In brief: 2 ml of each wine (bottle) sample were loaded per injection into the mass spectrometer. A set of six experimental sample technical replicates per wine were measured.
 
 The metabolomic process involves: taking a small sample from each bottle, detection, spectral analysis, generation of a "sample specific" fingerprint.
 
-The metabolomic profiling analysis of all samples were carried out from the Max Planck institute of Molecular and plant physiology in Potsdam together with the University of Santiago de Chile. 
+The metabolomic profiling analysis of all samples were carried out by the *Max Planck Institute of Molecular and Plant Physiology in Potsdam* together with the *University of Santiago de Chile*. 
 
-
-We receive the raw files including: molecular masses, retention time and associated peak intensities. 
+We received the raw files including: molecular masses, retention time and associated peak intensities. 
 
 ### 2.3 Data Preprocessing
 
-The data came in a .txt file and was preprocessed for easier further analysis with R Studio.
+The data came in a .txt file and was preprocessed for easier further analysis with R Studio as seen in the R code below.
 ```{r transform and save}
 # # Transform raw data
 # data <- read.delim("../300_Wine_pos.txt")
@@ -216,7 +218,6 @@ The data came in a .txt file and was preprocessed for easier further analysis wi
 
 Eventually the data was in the following transposed format with which all further analysis were made. The data is in a wide format and has a total of 300 rows for each wine sample and 5746 columns whereas column 7 to 5746 are the individual metabolomic measurements (peaks).
 
-
 ```{r}
 load("wine.RdA")
 # dim(wine)
@@ -226,10 +227,9 @@ head(wine[,c(1:9, 5745:5746)]) # show first 6 rows and first nine and last two c
 
 ### 2.4 Procedure
 
-During the course of this report we will test whether the quality of the wines (P,V,R) is related to their metabolomic profile. We will go through several descriptive analyses of the data to get an idea of how the metabolites are organized and distributed in the different metabolic categories and later on we will use machine learning to group the data and see if they are associated with the quality reported by humans. 
+During the course of this report we will test whether the quality of the wines (P,V,R) is related to their metabolomic profile. We will go through several descriptive analysis of the data to get an idea of how the metabolites are organized and distributed in the different metabolic categories and later on we will use machine learning to group the data and see if they are associated with the quality reported by humans. 
 
-This is an untargeted aproach to determine wine quality from wine metabolomics, that means for our purpose the exactly name of the metabolites is not importat, we are seaking for signals of wine quality in the complete or a sample of the metabolites. 
-
+This is an untargeted aproach to determine wine quality from wine metabolomics, that means for our purpose the exact name of the metabolites is not importat, we are seeking to find signals of wine quality in the complete or a sample of the metabolites.
 
 
 ## 3 Analysis
@@ -249,14 +249,15 @@ Merlot <- byname("Merlot")
 Mix <- byname("Mix")            
 SYRAH <- byname("SYRAH")
 ```
+
 ### 3.1 First Exploratory Data Analysis
 
-In the following two tables we can see that the data set beholds 6 different wine types (out of which one is of type Mix) and 7 different wine yards that produce these wines. Not every wine yard produces every wine type.  
+In the following two tables we can see that the data set beholds six different wine types (out of which one is of type Mix) and 7 different wine yards that produce these wines. Not every wine yard produces every wine type.  
 ```{r}
 table(wine$wineyard, wine$winetype) # see which yard produces which wine type
 ```
 
-Notable is that each wine sample was taken in one of the years between 2002 and 2006. 2006 is the only year in which each wine type was sampled at least 6 times. (Every sample included 6 different bottles.)
+Notable is that each wine sample was taken in one of the years between 2002 and 2006. 2006 is the only year in which each wine type was sampled at least 6 times. (Every sample included six individual bottles.)
 ```{r}
 table(wine$year , wine$winetype) # which wine types are from which year
 ```
@@ -268,7 +269,8 @@ The following frequency plot (Fig 1) shows the three wine quality categories: **
 plot(wine$quality, col= c("blue", "green", "red"),
      main = 'Fig 1: Quality') # frequency of wine quality category
 ```
-In Figure 2, we have the 6 types of wines and the bar is divided into the quality of each wine in the data set. The only type of wine that has samples in all categories is the cabernet sauvignon and is the type of wine that has more samples as well. The carmermere and the wine mix have two different types of quality and for the other wines only one type of quality. in Figure 3, we have the same aproach for wineyard. 
+
+In Figure 2, we have the six types of wines and the bar is divided into the quality of each wine in the data set. The only type of wine that has samples in all categories is the Cabernet-sauvignon and is the type of wine that has the most samples, too. The Carmenere and the wine mix have two different types of quality and for the other wines only one type of quality. in Figure 3, we have the same aproach for wine yard and quality. 
 
 ```{r}
 barplot(table(wine$quality, wine$winetype), col = c("blue","green", "red"),
@@ -284,9 +286,7 @@ legend("topright", legend = c("High", "Regular", "Low"), title="Quality",
        fill= c("blue","green", "red"), horiz=FALSE)
 ```
 
-
-
-The Figure 4, shows the distribution of one single metabolomic measurement for each wine type. The result depict a high variance in amount of measured metabolomic for the wine types and suggests that this might correlate with the different years and/or the wine yard from which the wine sample was taken.
+Figure 4 shows the distribution of one single __random__ metabolomic measurement for each wine type. The result depict a high variance in amount of measured metabolomic for the wine types and suggests that this might correlate with the different years and/or the wine yard from which the wine samples were taken.
 ```{r}
 plot(wine$winetype , wine[,7],
      main = 'Fig 4: Random Metabolite distribution' ) # see exemplatory metabolomic distribution in col 6 for each wine type
@@ -294,9 +294,9 @@ plot(wine$winetype , wine[,7],
 
 ### 3.2 Interpreting the Metabolic Data 
 
-To understand the data a bit we can look at the variability of an abundance of a random metabolite in the different types of wine, vineyard and quality , like we did in Figure 4. 
+To understand the data a bit more we can look at the variability of an abundance of a random metabolite in the different types of wine, vineyard and quality, just like we did in Figure 4. 
 
-For the boxplots Figures (5,6,7,8,9 and 10), we use the same metabolite as an example, this metabolite was choosen randomly. 
+For the following boxplots figures (5,6,7,8,9 and 10), we use the same metabolite as an example, this metabolite was chosen randomly. 
 
 ``` {r, echo = FALSE}
 plot(wine$winetype , wine[,40], las = 2, main = 
@@ -305,33 +305,32 @@ plot(wine$winetype , wine[,40], las = 2, main =
 ```
 
 Here we have the different types of wines and we see how this certain metabolite is distributed independently and distinctly from the other wine types, showing variations. 
-this metabolite is found very poorly in Merlot and Cabernet Franc, but is widely spread in the syrah type of wine (Figure 5). 
+This metabolite is found very poorly in Merlot and Cabernet Franc, but is widely spread in the syrah type of wine (Figure 5).
+
 ``` {r, echo = FALSE}
 plot(wine$wineyard , wine[,40], las = 2,
     main =  "Fig 6: Variation of a Random Metabolite vs Wineyard")
 # see metabolomic distribution in col 6 for each wine type
 ```
-
-In the case of vineyards (Figure 6), the metabolite is widely distributed in the Aresti wineyard samples and in the other vineyards it is present in a more or less similar proportion to the other vineyards. 
+In the case of wine yeards (Figure 6), the metabolite is widely distributed in the Aresti wine yard's samples. In the other wine yards it is present in a more or less similar proportioned. 
 
 ``` {r, echo = FALSE}
 plot(wine$quality , wine[,40], las = 2,col= c("blue", "green", "red"), main = "Fig 7: Variation of a Random Metabolite vs Quality")
 # see metabolomic distribution in col 6 for each wine type
 ```
 
-Finally for the case of this random metabolite and its variation in different qualities of wine (Figure 7), we see that the values are slightly skewed and for the high and regular quality of wine also several outliers are observed. 
+Finally, for the case of this random metabolite and its variation in different qualities of wine (Figure 7), we see that the values are slightly skewed and for the high and regular quality of wine also several outliers are observed.
 
-
-To check if the specific distribution of this metabolite is real and significant and not just some results obtained by chance, we will randomly change the order of the row using the sample() function in R, to randomly change the position of the metabolite values. in this way we will set new random values to each row and see if this distribution gives similar results. 
+To check if the specific distribution of this metabolite is real and significant and not just some results obtained by chance, we will randomly change the order of the row using the sample() function in R, to randomly change the position of the metabolite values. This way, we will shuffle the rows and see if this distribution gives similar results. 
 
 ``` {r, echo = FALSE}
 plot(wine$winetype , sample(wine[,40]), las = 2, main = 
-       "Fig 8: shuffle rows - Random Metabolite vs Wine Type") 
+       "Fig 8: shuffle rows - Random Metabolite vs Wine type") 
 # see metabolomic distribution in col 6 for each wine type
 ```
 ``` {r, echo = FALSE}
 plot(wine$wineyard , sample(wine[,40]), las = 2,
-    main =  "Fig 9: shuffle rows - Random Metabolite vs Wineyard")
+    main =  "Fig 9: shuffle rows - Random Metabolite vs Wine yard")
 # see metabolomic distribution in col 6 for each wine type
 ```
 ``` {r, echo = FALSE}
@@ -341,13 +340,12 @@ plot(wine$quality , sample(wine[,40]), las = 2,
 # see metabolomic distribution in col 6 for each wine type
 ```
 
-After the shuffling we checked the distribution of the random metabolite in question in relation to the type of wine, the quality and the vineyard, and in all the boxplots we found no variation. i.e. the metabolite values were very similar in each case. This is an indicator that our data correspond to meaningful events and are not the result of random measurements (Figures 8,9 and 10). 
+After the shuffling, we checked the distribution of the random metabolite in question in relation to the type of wine, the quality and the wine yard, and in all the boxplots we found no variation. i.e. the metabolite values were very similar in each case. This is an indicator that our data correspond to meaningful events and are not the result of random measurements (Figures 8,9 and 10). 
 
 
-### 3.3 Wines Metabolics Profiles
+### 3.3 Wine Metabolomic Profiles
 
 Based on the visual inspection of the metabolomic profiles for the different types of wine, we observed differences according to the type of wine and the quality. (The relative abundance of metabolites is shown below) visually some metabolites peaks are detectable exclusively in each wine type.
-
 
 ```{r , echo=FALSE}
 # average of the bottle of wines
@@ -369,8 +367,7 @@ Axis(side=2, labels=TRUE)
 
 ```
 
-Figure 11. shows the relative abundance of 300 metabolites for Cabernet Franc wines, this is a wine of low quality. If we compare it with Merlot metabolic profil  (Figure 12), we can visualy see with the eye a similarity in the profiles, but the abundance in merlot wines for these metabolites is higher. 
-
+Figure 11 shows the relative abundance of 300 metabolites for Cabernet Franc wines, this is a wine of low quality. If we compare it with Merlot metabolic profil (Figure 12), we can see a similarity in the profiles, but the abundance in Merlot wines for these metabolites is higher. 
 
 ```{r , echo=FALSE}
 # average of the quality of wines for merlot
@@ -392,7 +389,7 @@ Axis(side=2, labels=TRUE)
 
 ```
 
-The relative abundance profile for regular quality Syrah wines  is shown in the figure 13. This metabolic profile is slightly different from those of low quality wines (Figure 11 and 12), and here you can see some metabolic peaks that are not seen in the metabolic profiles from Cabernet Franc and Merlot.
+The relative abundance profile for regular quality Syrah wines is shown in figure 13. This metabolomic profile is slightly different from those of low quality wines (Figure 11 and 12), and here one can see some metabolomic peaks that are not seen in the metabolomic profiles from Cabernet Franc and Merlot.
 
 ``` {r , echo=FALSE}
 # average of the quality of wines for SYRAH
@@ -413,8 +410,7 @@ Axis(side=1, labels=FALSE)
 Axis(side=2, labels=TRUE)
 ```
 
-
-In the following Figure 14, the difference between the profiles of two types of wine quality, from the same brand, is considerably more noticeable. In figure 14, we have the metabolic profile for the type of mix wine with premium and regular categories respectively.  These results are indicators that wines quality determined by a wine expert may be related to their metabolomic profile. It is important to clarify that these descriptions are based on the visual comparison of different metabolic profiles but later we will apply clusters techniques to analyze the wines and their quality in more detail. 
+In the following figure 14, the difference between the profiles of two types of wine quality, from the same brand, is considerably more noticeable. In figure 14, we have the metabolomic profile for the type of mix wine with premium and regular categories respectively.  These results are indicators that wines quality determined by a wine expert may be related to their metabolomic profile. It is important to clarify that these descriptions are based on the visual comparison of different metabolic profiles but later we will apply clusters techniques to analyze the wines and their quality in more detail in chapter 4. 
 
 ``` {r , echo=FALSE}
 # average of the quality of wines for Mix
@@ -495,8 +491,7 @@ Axis(side=2, labels=TRUE)
 
 ```
 
-Finally we have the metabolic profiles for the cabernet sauvignon wine (Figure 16). This wine is the only one in our dataset that contains high, regular and low quality bottles. in the Figure 16 we see the respective profiles. In general, there are small differences, some peaks are more pronounced and more abundant. According to internet data, a bottle of Cacabernet Sauvignon can cost between 5 and 11 euros. With the following analyses we want to check if the price and quality of the wine bottles are related to the metabolic profile. These first comparisons of metabolic profiles serve to make a visual comparison of abundance and distribution metabolites in wine samples and their relationship to wine quality.
-
+Finally we have the metabolic profiles for the Cabernet-sauvignon wine (Figure 16). This wine is the only one in our dataset that contains high, regular and low quality bottles. I figure 16 we see the respective profiles. In general, there are small differences, some peaks are more pronounced and more abundant. According to internet data, a bottle of Cacabernet-sauvignon can cost between 5 and 11 euros. With the following analyses we want to check if the price and quality of the wine bottles are related to the metabolomic profile. These first comparisons of metabolomic profiles serve to make a visual comparison of abundance and distribution metabolites in wine samples and their relationship to wine quality.
 
 ``` {r, echo= FALSE }
 ## Csauvignon ##
@@ -555,9 +550,9 @@ Axis(side=2, labels=TRUE)
 wine <- wine2
 ```
 
-### 3.4 Heatmap for wine type's average
+### 3.4 Heatmap for Wine Type's Average
 
-A heatmap is a good option to visualice the level of expresion of a sample of metabolites for a group of winetypes. To do so, we separate de dataset in subsets regarding the winetype and the wine quality, similar to the wine metabolic profiling from the last seccion. and end up with the average metabolic peaks values for Syrah, merlot, Mix regular, mix low and so on. secondly we took a sample of metabolites to visualice. the main reason to take a subset is that creating a heat map with 5000 variables may not be nice to visualise, but taking a subset can give an insight of the metabolites peaks variation in the wine types. 
+A heatmap is a good option to visualise the level of expression of a sample of metabolites for a group of wine types. To do so, we separate the dataset in subsets regarding the wine type and the wine quality, similar to the wine metabolomic profiling from the last seccion. We end up with the average metabolomic peak values for Syrah, Merlot, Mix regular, Mix low and so on. Secondly, we take a random sample of metabolites to visualise. The main reason to take a subset is that creating a heat map with 5000 variables may not be nice to visualise and understand, but taking a subset can give an insight of the metabolite peaks variation in the wine types. 
 
 ```{r, fig.width=7, fig.height=20}
 #########################################################
@@ -584,11 +579,11 @@ XX_heatmap <- heatmap(twine_Heatmap, Rowv=NA, Colv=NA,
                        col = heat.colors(256), scale="column", margins=c(5,10))
 ```
 
-This heatmap shows that some regions (i.e. some metabolic groups) are expressed more or less in wine types. These results along with the previous results are suggestions that each wine has a unique footprint and this is reflected in its metabolism. we still cannot conclude if this metabolic footprint is directly related to the quality of wines. 
+This heatmap shows that some regions (i.e. some metabolic groups) are expressed more or less in wine types. These results along with the previous results are suggesting that each wine has a unique footprint and this is reflected in its metabolism. We still cannot conclude if this metabolic footprint is directly related to the quality category of wines. 
 
 ## 4 PCA and Clustering
 
-PCA can be use to reduce the dimension of our dataset in only two principal components. In Figure 17, we can see the corresponding principal component from our wine the dataset.
+PCA can be used to reduce the dimension of a dataset to only two principal components. In Figure 17, we can see the corresponding principal component from the metabolomics in the wine dataset.
 
 The following PCA plot (Figure 17) does not give much insight into the meaning of the clustered 300 wine samples by all 5740 metabolomics peaks. 
 ```{r}
@@ -601,18 +596,14 @@ points(pr.out$x[,1:2],col= km.out$cluster)
 
 Hence, the wine samples will be filtered by one examplatory wine yard, Vascos. The goal is to compare the PCA analysis with 3 clusters to the human-categorized quality of wine. In other words: does the composition of the 5740 metabolomics derive the quality category of the wine?
 
-### 4.1 The general filter function
-```{r}
+### 4.1 Vascos Wine Yard Specific Analysis
+54 samples of the Vascos wine yard are available - all from the wine type Cabernet-sauvignon (see Figure 3).
+
+```{r VASCOS}
 # function that filters the dataframe by wine yard
 byname <- function(name){
   return(wine[which(wine$wineyard == name), ])
 }
-```
-
-### 4.2 Vascos wineyard specific analysis
-54 samples of the Vascos wine yard are available - all from the wine type Cabernet-sauvignon (see Figure 3).
-
-```{r VASCOS}
 vascos <- byname("VASCOS")
 # How many wine samples are taken from the Vascos wine yard?
 dim(vascos)
@@ -632,7 +623,7 @@ plot(pr.out$x[,1:2], type="n", ylab="PC2", main="Fig18b: Bottle IDs colored by q
 text(pr.out$x[,1:2], labels=rownames(vascos), col=c(vascos$quality)) # bottles colored by quality, wow!
 mtext("PCA for VASCOS", outer = TRUE, cex = 1.5)
 ```
-As seen in the plots above (Figure 18a and 18b), the thesis can not be validated. The clusters built from the PCA of the metabolomics in the wine samples do not determine the quality category. However, considering the different years in which the samples were taken, this might indicate that the metabolomics changed due to seasonal differences. 
+As seen in the plots above (Figure 18a and 18b), the initial thesis can not be validated. The clusters built from the PCA of the metabolomics in the wine samples do not determine the quality category. However, considering the different years in which the samples were taken, this might indicate that the metabolomics changed due to seasonal differences. 
 
 From the following table we can derive that the data set contains Cabernet-sauvignon wine samples from the Vascos wine yard from three different years: 2004, 2005 and 2006
 ```{r}
@@ -646,7 +637,7 @@ plot(pr.out$x[,1:2], type="n", ylab="PC2", main="Fig 19: Bottle IDs colored by y
 text(pr.out$x[,1:2], labels=rownames(vascos), col=c(vascos$year)) # bottles colored by year
 mtext("PCA for VASCOS", outer = TRUE, cex = 1.5)
 ```
-From this analysis we can conclude that the metabolics do not determine the quality label (P, R, V) but rather change due to annual differences in the crops used for the wine. This is an interesting finding, considering that the scientific field of metabolomic measurements is used to determine the quality of a wine. 
+From this analysis we can conclude that the metabolomics do not determine the quality label (P, R, V) but rather change due to annual differences in the crops used for the wine. This is an interesting finding, considering that the scientific field of metabolomic measurements is used to determine the quality of a wine. 
 
 As a next step for the Vascos wine yard's Cabernet-sauvignon wine, the variances of the metabolomics are being considered.
 The highest variances appear in the following 15 metabolomics for the sampled wine:
@@ -665,29 +656,26 @@ Taking the metabolomic #14 in which the highest variance was measured, the boxpl
 
 # par(mfrow=c(1,1))
 
-plot(vascos$bottlenum, vascos[, "14"], main = "Fig 20: Vascos vs Bottle id") # the variance is equal for each bottle
+plot(vascos$bottlenum, vascos[, "14"], main = "Fig 20: Distribution of metabolomic #14 per sampled wine bottle") # the variance is equal for each bottle
 ```
 
-Using again the years as a seperating criterium, one can see that the measured occurence of this specific metabolomic differs a lot between the three years in which samples were taken (Figure 21).
+Using again the years as a seperating criterium, one can see that the measured occurence of this specific metabolite differs a lot between the three years in which samples were taken (Figure 21).
 ```{r}
-plot(vascos$year, vascos[, "14"], main = "Fig 21: Vascos vs Year" ) # the variance in metabolomic "14" differs a lot between the years
+plot(vascos$year, vascos[, "14"], main = "Fig 21: Distribution of metabolomic #14 per year" ) # the variance in metabolomic "14" differs a lot between the years
 
 # plot(vascos$year, vascos[,7])
 ```
-This again underlines the conclusion that the yearly difference in metabolomic occurence is very high.
+
+This again underlines the conclusion that the yearly difference in metabolomic occurence is more crucial to its variance than the quality category of the wine sample.
 
 ## 4 Conclusion
-
 In general, with the results of the exploratory data analysis we found that wines have a unique distribution (footprint) with respect to their metabolic profile, these results serve to understand that the metabolic processes of each wine are independent of its vineyard and the type of wine (Figure 1:7). We also check this when we randomly change the metabolic values of one metabolite and observe this distribution is not obtained at random (Figures 8:10). On the other hand, the heatmap that was made with a sample of 100 metabolites shows that for wines with their respective quality, there are some areas of stronger coloring and others of lighter coloring, indicating differences between the metabolic levels of these metabolites regarding the type of wine and the quality. 
 
-Data processing by supervised multivariate procedures as PCA and k-means didn't found a difference in  wine attributes such as cultivar, year of production, vineyard, and quality score rating (Figure 17:19).
+Data processing by supervised multivariate procedures as PCA and k-means didn't find a difference in  wine attributes such as cultivar, year of production, vineyard, and quality score rating (Figure 17:19).
 
-From these observations, we conclude that metabolomics of wine is no related to wine quality clasification. This is valid for the machine learning methods we use, and we do not discard the possibility that the use of other methods may find a direct relationship between wine metabolomics and its quality. 
+From these observations, we conclude that metabolomics of wine are not related to wine quality classification. This is valid for the machine learning methods we use, and we do not discard the possibility that the use of other methods may find a direct relationship between a wine's metabolomics and its quality. 
 
-In conclusion untargeted metabolomic analysis of wine, can be use to  establish wine profiles (metabolic profiles), but not for wine quality clasification.
-
-
-
+To conclude, an untargeted metabolomic analysis of wine can be used to establish wine profiles (metabolomic profiles), but not for wine quality classification.
 
 ## 5 Bibliography
 (1) <https://doi.org/10.1007/s12161-016-0502-x>
