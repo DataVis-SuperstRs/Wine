@@ -1,0 +1,32 @@
+```{r}
+#########################################################
+### Customizing and plotting the heat map
+#########################################################
+# add all the average wines
+library(gplots) 
+
+wine_Heatmap <- rbind(MvCsauvignon, MrCsauvignon, MpCsauvignon,
+      MpCarmenere, MrCarmenere, MrMix, MpMix, 
+      MSYRAH, MMerlot, MCabernetF)
+wine_Heatmap <- as.matrix(wine_Heatmap[,-c(1:7)])
+
+wine_Heatmap <- matrix(as.numeric(wine_Heatmap), nrow = 10, ncol=500, byrow = TRUE)
+#dim(wine_Heatmap)
+colnames(wine_Heatmap) <- c(1:500)
+rownames(wine_Heatmap) <- c("Variety \n Csauvignon", "Regular \n Csauvignon", " PremiumCsauvignon",
+                  "Premium \n Carmenere", "Regular \n Carmenere", "Regular \n Mix", "Premium \nMix", 
+                  "SYRAH", "Merlot", "CabernetF")
+
+twine_Heatmap <- t(wine_Heatmap[,1:50]) 
+
+XX_heatmap <- heatmap.2(twine_Heatmap, 
+                       col = heat.colors(256), 
+                      scale="column", Rowv=NA, Colv=NA,
+                      distfun = dist, 
+                      hclustfun = hclust, 
+                      trace= "none",
+                      dendrogram = "none",
+                      reorderfun=function(d, w) 
+                        reorder(d, w, agglo.FUN = mean))
+
+```
