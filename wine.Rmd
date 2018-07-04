@@ -558,12 +558,12 @@ wine <- wine2
 
 A heatmap is a good option to visualise the level of expression of a sample of metabolites for a group of wine types. To do so, we separate the dataset in subsets regarding the wine type and the wine quality, similar to the wine metabolomic profiling from the last seccion. We end up with the average metabolomic peak values for Syrah, Merlot, Mix regular, Mix low and so on. Secondly, we take a random sample of metabolites to visualise. The main reason to take a subset is that creating a heat map with 5000 variables may not be nice to visualise and understand, but taking a subset can give an insight of the metabolite peaks variation in the wine types.
 
-```{r}
-#, fig.width=7, fig.height=20}
+```{r, message=FALSE, warning=FALSE}
 #########################################################
 ### Customizing and plotting the heat map
 #########################################################
 # add all the average wines
+library(gplots) 
 
 wine_Heatmap <- rbind(MvCsauvignon, MrCsauvignon, MpCsauvignon,
       MpCarmenere, MrCarmenere, MrMix, MpMix, 
@@ -573,14 +573,23 @@ wine_Heatmap <- as.matrix(wine_Heatmap[,-c(1:7)])
 wine_Heatmap <- matrix(as.numeric(wine_Heatmap), nrow = 10, ncol=500, byrow = TRUE)
 #dim(wine_Heatmap)
 colnames(wine_Heatmap) <- c(1:500)
-rownames(wine_Heatmap) <- c("Variety Csauvignon", "Regular Csauvignon", " PremiumCsauvignon",
-                  "Premium Carmenere", "Regular Carmenere", "Regular Mix", "Premium Mix", 
+rownames(wine_Heatmap) <- c("Variety \n Csauvignon", "Regular \n Csauvignon", " PremiumCsauvignon",
+                  "Premium \n Carmenere", "Regular \n Carmenere", "Regular \n Mix", "Premium \nMix", 
                   "SYRAH", "Merlot", "CabernetF")
 
 twine_Heatmap <- t(wine_Heatmap[,1:50]) 
 
+XX_heatmap <- heatmap.2(twine_Heatmap, 
+                       col = heat.colors(256), 
+                      scale="column", Rowv=NA, Colv=NA,
+                      distfun = dist, 
+                      hclustfun = hclust, 
+                      trace= "none",
+                      dendrogram = "none",
+                      reorderfun=function(d, w) 
+                        reorder(d, w, agglo.FUN = mean),
+                      margins=c(12,10))
 
-XX_heatmap <- heatmap(twine_Heatmap, Rowv=NA, Colv=NA, col = heat.colors(256), scale="column", cexRow = 0.5, margins=c(12,9))
 ```
 
 This heatmap shows that some regions (i.e. some metabolic groups) are expressed more or less in wine types. These results along with the previous results are suggesting that each wine has a unique footprint and this is reflected in its metabolism. We still cannot conclude if this metabolic footprint is directly related to the quality category of wines. 
