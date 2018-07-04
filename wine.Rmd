@@ -324,15 +324,19 @@ Finally, for the case of this random metabolite and its variation in different q
 To check if the specific distribution of this metabolite is real and significant and not just some results obtained by chance, we will randomly change the order of the row using the sample() function in R, to randomly change the position of the metabolite values. This way, we will shuffle the rows and see if this distribution gives similar results. 
 
 ``` {r, echo = FALSE}
+par(mar=c(9, 5.1,4.1,2.1))
 plot(wine$winetype , sample(wine[,40]), las = 2, main = 
        "Fig 8: shuffle rows - Random Metabolite vs Wine type") 
 # see metabolomic distribution in col 6 for each wine type
 ```
+
 ``` {r, echo = FALSE}
+par(mar=c(8, 5.1,4.1,2.1))
 plot(wine$wineyard , sample(wine[,40]), las = 2,
     main =  "Fig 9: shuffle rows - Random Metabolite vs Wine yard")
 # see metabolomic distribution in col 6 for each wine type
 ```
+
 ``` {r, echo = FALSE}
 plot(wine$quality , sample(wine[,40]), las = 2,
      col= c("blue", "green", "red"),
@@ -552,9 +556,10 @@ wine <- wine2
 
 ### 3.4 Heatmap for Wine Type's Average
 
-A heatmap is a good option to visualise the level of expression of a sample of metabolites for a group of wine types. To do so, we separate the dataset in subsets regarding the wine type and the wine quality, similar to the wine metabolomic profiling from the last seccion. We end up with the average metabolomic peak values for Syrah, Merlot, Mix regular, Mix low and so on. Secondly, we take a random sample of metabolites to visualise. The main reason to take a subset is that creating a heat map with 5000 variables may not be nice to visualise and understand, but taking a subset can give an insight of the metabolite peaks variation in the wine types. 
+A heatmap is a good option to visualise the level of expression of a sample of metabolites for a group of wine types. To do so, we separate the dataset in subsets regarding the wine type and the wine quality, similar to the wine metabolomic profiling from the last seccion. We end up with the average metabolomic peak values for Syrah, Merlot, Mix regular, Mix low and so on. Secondly, we take a random sample of metabolites to visualise. The main reason to take a subset is that creating a heat map with 5000 variables may not be nice to visualise and understand, but taking a subset can give an insight of the metabolite peaks variation in the wine types.
 
-```{r, fig.width=7, fig.height=20}
+```{r}
+#, fig.width=7, fig.height=20}
 #########################################################
 ### Customizing and plotting the heat map
 #########################################################
@@ -572,11 +577,10 @@ rownames(wine_Heatmap) <- c("Variety Csauvignon", "Regular Csauvignon", " Premiu
                   "Premium Carmenere", "Regular Carmenere", "Regular Mix", "Premium Mix", 
                   "SYRAH", "Merlot", "CabernetF")
 
-twine_Heatmap <- t(wine_Heatmap[,1:100]) 
+twine_Heatmap <- t(wine_Heatmap[,1:50]) 
 
 
-XX_heatmap <- heatmap(twine_Heatmap, Rowv=NA, Colv=NA, 
-                       col = heat.colors(256), scale="column", margins=c(5,10))
+XX_heatmap <- heatmap(twine_Heatmap, Rowv=NA, Colv=NA, col = heat.colors(256), scale="column", cexRow = 0.5, margins=c(12,9))
 ```
 
 This heatmap shows that some regions (i.e. some metabolic groups) are expressed more or less in wine types. These results along with the previous results are suggesting that each wine has a unique footprint and this is reflected in its metabolism. We still cannot conclude if this metabolic footprint is directly related to the quality category of wines. 
@@ -617,9 +621,9 @@ km.out<-kmeans(vascos[,7:5746],centers=3,nstart=1)
 pr.out<-prcomp(vascos[,7:5746])#,scale=TRUE)
 par(mfrow=c(1,2), oma = c(0, 0, 2, 0))
 plot(pr.out$x[,1:2],type="n", ylab="PC2", 
-     main= "Fig 18a: Bottle IDs colored by cluster", yaxt="n", xaxt="n")
+     main= "Fig 18a: \n Bottle IDs colored by cluster", yaxt="n", xaxt="n")
 text(pr.out$x[,1:2], labels=rownames(vascos), col=km.out$cluster) # bottles colored by cluster, nothing spectacular
-plot(pr.out$x[,1:2], type="n", ylab="PC2", main="Fig18b: Bottle IDs colored by quality",  yaxt="n", xaxt="n")
+plot(pr.out$x[,1:2], type="n", ylab="PC2", main="Fig18b: \n Bottle IDs colored by quality",  yaxt="n", xaxt="n")
 text(pr.out$x[,1:2], labels=rownames(vascos), col=c(vascos$quality)) # bottles colored by quality, wow!
 mtext("PCA for VASCOS", outer = TRUE, cex = 1.5)
 ```
